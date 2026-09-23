@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Бурмал Ставка</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>⚔️ Бурмал Ставка</h1>
+      <div class="balance">💵 <span id="balance">1000</span></div>
+    </header>
+
+    <canvas id="arena" width="320" height="180"></canvas>
+
+    <div class="controls">
+      <button id="btn-spin">🎲 Слот</button>
+      <button id="btn-fight">🥊 Бой</button>
+      <button id="btn-pvp">⚔️ PvP</button>
+    </div>
+
+    <div id="log" class="log">Готов к бою!</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
