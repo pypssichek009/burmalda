@@ -129,8 +129,8 @@ const logEl = document.getElementById('log');
 let state = {
   balance: 1000,
   fighters: [
-    { name: 'Мулатов', x: 60, y: 120, hp: 100, hpMax: 100, color: '#ef4444', dark: '#7f1d1d', dir: 1 },
-    { name: 'Дёмкин',  x: 380, y: 120, hp: 100, hpMax: 100, color: '#3b82f6', dark: '#1e3a8a', dir: -1 },
+    { name: 'Мулатов', x: 60, y: 120, hp: 100, hpMax: 100, color: '#ef4444', dark: '#7f1d1d' },
+    { name: 'Дёмкин',  x: 380, y: 120, hp: 100, hpMax: 100, color: '#3b82f6', dark: '#1e3a8a' },
   ],
   shake: 0,
   particles: [],
@@ -146,61 +146,50 @@ function log(text) {
   logEl.textContent = text;
 }
 
-// ---- Рисование пиксельного бойца ----
 function drawFighter(f, t) {
-  const px = 4; // размер пикселя
-  const bob = Math.sin(t / 200) * 2; // лёгкое покачивание
+  const px = 4;
+  const bob = Math.sin(t / 200) * 2;
   const x = f.x;
   const y = f.y + bob;
 
-  // Тень
   ctx.fillStyle = 'rgba(0,0,0,.5)';
   ctx.beginPath();
-  ctx.ellipse(x + 14, f.y + 42, 18, 5, 0, 0, Math.PI * 2);
+  ctx.ellipse(x + 16, f.y + 44, 18, 5, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Ноги
   ctx.fillStyle = '#1e293b';
   ctx.fillRect(x + 6, y + 28, px * 2, px * 3);
   ctx.fillRect(x + 18, y + 28, px * 2, px * 3);
 
-  // Шорты
   ctx.fillStyle = f.dark;
   ctx.fillRect(x + 4, y + 20, px * 6, px * 2);
 
-  // Тело
   ctx.fillStyle = f.color;
   ctx.fillRect(x + 6, y + 8, px * 4, px * 3);
-  // блик
+
   ctx.fillStyle = 'rgba(255,255,255,.25)';
   ctx.fillRect(x + 6, y + 8, px, px * 3);
 
-  // Руки (боксёрская стойка)
   ctx.fillStyle = f.color;
   ctx.fillRect(x + 2, y + 10, px, px * 3);
   ctx.fillRect(x + 22, y + 10, px, px * 3);
 
-  // Кулаки (перчатки)
   ctx.fillStyle = f.dark;
   ctx.fillRect(x + 1, y + 8, px * 1.5, px * 1.5);
   ctx.fillRect(x + 22, y + 8, px * 1.5, px * 1.5);
 
-  // Голова
   ctx.fillStyle = f.color;
   ctx.fillRect(x + 8, y - 4, px * 3, px * 3);
 
-  // Глаза
   ctx.fillStyle = '#fff';
   ctx.fillRect(x + 9, y + 1, px * .6, px * .6);
   ctx.fillRect(x + 13, y + 1, px * .6, px * .6);
 
-  // Имя
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 11px monospace';
   ctx.textAlign = 'center';
   ctx.fillText(f.name, x + 16, y - 12);
 
-  // HP-бар над именем
   const barW = 44, barH = 5;
   const barX = x + 16 - barW / 2;
   const barY = y - 28;
@@ -214,14 +203,12 @@ function drawFighter(f, t) {
   grad.addColorStop(1, '#16a34a');
   ctx.fillStyle = grad;
   ctx.fillRect(barX, barY, barW * hpRatio, barH);
-  // обводка
   ctx.strokeStyle = '#fff';
   ctx.lineWidth = 1;
   ctx.strokeRect(barX - 1, barY - 1, barW + 2, barH + 2);
 }
 
 function drawCrowd(t) {
-  // Мерцающая толпа сверху
   ctx.fillStyle = '#020617';
   ctx.fillRect(0, 0, canvas.width, 40);
   for (let i = 0; i < 80; i++) {
@@ -234,7 +221,6 @@ function drawCrowd(t) {
 }
 
 function drawArena(t) {
-  // Фон — октагон
   const grd = ctx.createLinearGradient(0, 0, 0, canvas.height);
   grd.addColorStop(0, '#0f172a');
   grd.addColorStop(.5, '#1e293b');
@@ -244,11 +230,9 @@ function drawArena(t) {
 
   drawCrowd(t);
 
-  // Пол ринга
   ctx.fillStyle = '#1a2f5a';
   ctx.fillRect(0, 100, canvas.width, canvas.height - 100);
 
-  // Сетка октагона
   ctx.strokeStyle = 'rgba(100,150,255,.15)';
   ctx.lineWidth = 1;
   for (let x = 0; x < canvas.width; x += 16) {
@@ -258,14 +242,12 @@ function drawArena(t) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
   }
 
-  // Прожектор сверху
   const spotGrd = ctx.createRadialGradient(canvas.width/2, 40, 20, canvas.width/2, 40, 200);
   spotGrd.addColorStop(0, 'rgba(255,255,220,.15)');
   spotGrd.addColorStop(1, 'rgba(255,255,220,0)');
   ctx.fillStyle = spotGrd;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Полосы прожекторов
   ctx.save();
   ctx.globalAlpha = .08;
   ctx.fillStyle = '#ffffdd';
@@ -306,7 +288,6 @@ function draw(t) {
   state.fighters.forEach(f => drawFighter(f, t));
   drawParticles();
 
-  // Вспышка экрана при ударе
   if (state.screenFlash > 0) {
     ctx.fillStyle = `rgba(255,255,255,${state.screenFlash / 100})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -316,10 +297,10 @@ function draw(t) {
   ctx.restore();
 }
 
-function spawnDamage(x, y, dmg, crit=false) {
+function spawnDamage(x, y, dmg, crit) {
   state.particles.push({
-    x, y, vy: -2, vx: (Math.random() - .5) * 2,
-    text: `-${dmg}${crit ? '!' : ''}`,
+    x: x, y: y, vy: -2, vx: (Math.random() - .5) * 2,
+    text: '-' + dmg + (crit ? '!' : ''),
     color: crit ? '#fbbf24' : '#ef4444',
     size: crit ? 22 : 16,
     life: 60, maxLife: 60,
@@ -329,7 +310,7 @@ function spawnDamage(x, y, dmg, crit=false) {
 function spawnHitFx(x, y) {
   for (let i = 0; i < 8; i++) {
     state.particles.push({
-      x, y,
+      x: x, y: y,
       vx: (Math.random() - .5) * 6,
       vy: (Math.random() - .5) * 6 - 1,
       text: '✦',
@@ -340,7 +321,6 @@ function spawnHitFx(x, y) {
   }
 }
 
-// ---- Анимационный цикл ----
 let animT = 0;
 function loop() {
   animT += 16;
@@ -351,7 +331,6 @@ function loop() {
 loop();
 updateUI();
 
-// ---- Слот ----
 document.getElementById('btn-spin').onclick = async () => {
   const symbols = ['🍫', '🍩', '🍒', '💎', '7️⃣', '🍋'];
   log('🎰 Крутим барабаны...');
@@ -362,18 +341,17 @@ document.getElementById('btn-spin').onclick = async () => {
     symbols[Math.floor(Math.random() * symbols.length)],
   ];
 
-  // Анимация вращения 1.2 секунды
   for (let frame = 0; frame < 15; frame++) {
     const rand = [
       symbols[Math.floor(Math.random() * symbols.length)],
       symbols[Math.floor(Math.random() * symbols.length)],
       symbols[Math.floor(Math.random() * symbols.length)],
     ];
-    logEl.innerHTML = `<div class="slot-reel"><span>${rand[0]}</span><span>${rand[1]}</span><span>${rand[2]}</span></div>`;
+    logEl.innerHTML = '<div class="slot-reel"><span>' + rand[0] + '</span><span>' + rand[1] + '</span><span>' + rand[2] + '</span></div>';
     await new Promise(r => setTimeout(r, 80));
   }
 
-  logEl.innerHTML = `<div class="slot-reel"><span>${finalReel[0]}</span><span>${finalReel[1]}</span><span>${finalReel[2]}</span></div>`;
+  logEl.innerHTML = '<div class="slot-reel"><span>' + finalReel[0] + '</span><span>' + finalReel[1] + '</span><span>' + finalReel[2] + '</span></div>';
 
   let win = 0;
   if (finalReel[0] === finalReel[1] && finalReel[1] === finalReel[2]) win = 300;
@@ -385,15 +363,14 @@ document.getElementById('btn-spin').onclick = async () => {
 
   await new Promise(r => setTimeout(r, 400));
   if (win > 0) {
-    log(`🎉 ${finalReel.join(' ')} → +${win} монет!`);
+    log('🎉 ' + finalReel.join(' ') + ' → +' + win + ' монет!');
     state.screenFlash = 60;
   } else {
-    log(`😢 ${finalReel.join(' ')} → -100 монет`);
+    log('😢 ' + finalReel.join(' ') + ' → -100 монет');
   }
   if (tg) tg.HapticFeedback.impactOccurred(win > 0 ? 'heavy' : 'light');
 };
 
-// ---- Бой ----
 document.getElementById('btn-fight').onclick = async () => {
   const f1 = state.fighters[0];
   const f2 = state.fighters[1];
@@ -404,7 +381,6 @@ document.getElementById('btn-fight').onclick = async () => {
   f1.x = 60; f2.x = 380;
 
   const battleInterval = setInterval(() => {
-    // Движение
     f1.x += (Math.random() - 0.4) * 12;
     f2.x += (Math.random() - 0.6) * 12;
     f1.x = Math.max(20, Math.min(220, f1.x));
@@ -431,19 +407,16 @@ document.getElementById('btn-fight').onclick = async () => {
 
   clearInterval(battleInterval);
 
-  if (f1.hp <= 0 || f2.hp <= 0 || turn >= 30) {
-    const winner = f1.hp > f2.hp ? f1 : f2;
-    state.balance += 200;
-    updateUI();
-    log(`🏆 Победил ${winner.name}! +200 монет`);
-    setTimeout(() => {
-      f1.hp = f1.hpMax; f2.hp = f2.hpMax;
-      f1.x = 60; f2.x = 380;
-    }, 1500);
-  }
+  const winner = f1.hp > f2.hp ? f1 : f2;
+  state.balance += 200;
+  updateUI();
+  log('🏆 Победил ' + winner.name + '! +200 монет');
+  setTimeout(() => {
+    f1.hp = f1.hpMax; f2.hp = f2.hpMax;
+    f1.x = 60; f2.x = 380;
+  }, 1500);
 };
 
-// ---- PvP ----
 document.getElementById('btn-pvp').onclick = () => {
   if (tg) tg.showAlert('PvP скоро появится!');
   else alert('PvP скоро появится!');
